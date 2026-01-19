@@ -110,6 +110,37 @@ class Deck {
  */
 const CardManager = {
     deck: null,
+    currentDeckColor: 'blue', // 'blue' или 'red'
+
+    /**
+     * Инициализира CardManager при първи път
+     */
+    init() {
+        // Прочита последния използан цвят от localStorage
+        const lastDeckColor = localStorage.getItem('lastDeckColor');
+        if (lastDeckColor) {
+            // Алтернира на противоположния цвят
+            this.currentDeckColor = lastDeckColor === 'blue' ? 'red' : 'blue';
+        } else {
+            // При първи път, началния цвят е син
+            this.currentDeckColor = 'blue';
+        }
+        console.log('CardManager инициализиран. Текущо тесте:', this.currentDeckColor);
+    },
+
+    /**
+     * Връща текущия цвят на тестето
+     */
+    getDeckColor() {
+        return this.currentDeckColor;
+    },
+
+    /**
+     * Запазва текущия цвят в localStorage за следващо раздаване
+     */
+    saveDeckColor() {
+        localStorage.setItem('lastDeckColor', this.currentDeckColor);
+    },
 
     /**
      * Инициализира нов deck

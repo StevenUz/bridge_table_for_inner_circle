@@ -43,6 +43,15 @@ html, body {
     text-align: center;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
     flex-shrink: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+.header-content {
+    flex: 1;
+    text-align: center;
 }
 
 .header h1 {
@@ -57,6 +66,38 @@ html, body {
     color: #e0e0e0;
 }
 
+/* ===== View Switcher ===== */
+.view-switcher {
+    display: flex;
+    gap: 0.5rem;
+    flex-shrink: 0;
+}
+
+.view-btn {
+    padding: 0.5rem 1rem;
+    font-size: clamp(0.65rem, 1.2vw, 0.85rem);
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-color);
+    border: 2px solid rgba(212, 175, 55, 0.3);
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: var(--transition);
+}
+
+.view-btn:hover {
+    border-color: var(--accent-color);
+    background: rgba(212, 175, 55, 0.2);
+}
+
+.view-btn.active {
+    background: var(--accent-color);
+    color: var(--bg-color);
+    border-color: var(--accent-color);
+}
+
 /* ===== Main Game Area - 4x3 Grid ===== */
 .game-area {
     flex: 1;
@@ -67,6 +108,10 @@ html, body {
     padding: 10px;
     min-height: 0;
     overflow: hidden;
+}
+
+.game-area.hidden {
+    display: none !important;
 }
 
 /* Grid Placement */
@@ -140,6 +185,18 @@ html, body {
     margin-bottom: 0.4rem;
 }
 
+/* ===== Spectator Points Display ===== */
+.player-points-spectator {
+    text-align: center;
+    font-size: clamp(0.65rem, 1.2vw, 0.9rem);
+    color: var(--accent-color);
+    background: rgba(212, 175, 55, 0.15);
+    padding: 0.3rem 0.5rem;
+    border-radius: 4px;
+    margin-top: 0.3rem;
+    font-weight: bold;
+}
+
 /* ===== Card Display with Overlap ===== */
 .cards-display {
     flex: 1;
@@ -200,6 +257,46 @@ html, body {
 .card.clubs,
 .card.spades {
     color: var(--black-suit);
+}
+
+/* ===== Card Back (for hidden cards) ===== */
+.card-back {
+    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #1e3a8a 100%);
+    border: 2px solid #60a5fa;
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+}
+
+.card-back.red {
+    background: linear-gradient(135deg, #7f1d1d 0%, #dc2626 50%, #7f1d1d 100%);
+    border-color: #f87171;
+}
+
+.card-back::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255, 255, 255, 0.1) 10px, rgba(255, 255, 255, 0.1) 20px),
+        repeating-linear-gradient(-45deg, transparent, transparent 10px, rgba(255, 255, 255, 0.15) 10px, rgba(255, 255, 255, 0.15) 20px);
+    pointer-events: none;
+}
+
+.card-back::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60%;
+    height: 60%;
+    background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.2), transparent);
+    border-radius: 50%;
+    pointer-events: none;
 }
 
 /* Overlapping cards - horizontal */
@@ -342,6 +439,11 @@ html, body {
     font-size: 0.7rem;
     color: #b0b0b0;
     flex-shrink: 0;
+}
+
+/* ===== Utility Classes ===== */
+.hidden {
+    display: none !important;
 }
 
 /* ===== Responsive Design ===== */

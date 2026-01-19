@@ -12,6 +12,8 @@ const Game = {
     init() {
         if (this.initialized) return;
 
+        CardManager.init();
+        UIManager.init();
         PlayerManager.createPlayers();
         this.attachEventListeners();
         this.initialized = true;
@@ -27,6 +29,12 @@ const Game = {
         if (dealButton) {
             dealButton.addEventListener('click', () => this.dealNewGame());
         }
+
+        // Също и бутона в spectator режим
+        const spectatorDealButton = document.getElementById('deal-button-spectator');
+        if (spectatorDealButton) {
+            spectatorDealButton.addEventListener('click', () => this.dealNewGame());
+        }
     },
 
     /**
@@ -40,6 +48,14 @@ const Game = {
         // Симулира малка забавка за по-добър UX
         setTimeout(() => {
             try {
+                // Прочита последния използан цвят и алтернира за текущото раздаване
+                const lastDeckColor = localStorage.getItem('lastDeckColor');
+                if (lastDeckColor) {
+                    CardManager.currentDeckColor = lastDeckColor === 'blue' ? 'red' : 'blue';
+                } else {
+                    CardManager.currentDeckColor = 'blue';
+                }
+
                 // Раздава картите
                 const distribution = CardManager.dealToPlayers();
 
@@ -54,12 +70,19 @@ const Game = {
                     PlayerManager.setPlayerPoints(position, points);
                 });
 
-                // Показва картите
-                UIManager.displayAllPlayers();
+                // Показва картите с текущия цвят на тестето
+                const deckColor = CardManager.getDeckColor();
+                UIManager.displayAllPlayers(deckColor);
 
-                // Показва точките на South
+                // Показва картите и в Spectator режим
+                UIManager.displayAllPlayersSpectator();
+
+                // Показва точките на South в Player режим
                 const southPoints = PlayerManager.getPlayerPoints('SOUTH');
                 UIManager.displaySouthPoints(southPoints);
+
+                // Показва точките на всички в Spectator режим
+                UIManager.displayAllPointsSpectator();
 
                 // Показва информация в конзолата
                 const cardCounts = UIManager.getCardCountByPosition();
@@ -69,6 +92,10 @@ const Game = {
                 console.log('WEST:', cardCounts.WEST, 'Точки:', allPoints.WEST);
                 console.log('NORTH:', cardCounts.NORTH, 'Точки:', allPoints.NORTH);
                 console.log('EAST:', cardCounts.EAST, 'Точки:', allPoints.EAST);
+                console.log('Текущо тесте:', deckColor);
+
+                // Запазва текущия цвят за следващия път
+                localStorage.setItem('lastDeckColor', deckColor);
 
                 UIManager.showStatus('Карти раздадени успешно');
                 UIManager.setDealButtonState(true);

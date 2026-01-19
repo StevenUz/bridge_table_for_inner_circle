@@ -9,11 +9,17 @@
 <body>
     <div class="container">
         <header class="header">
-            <h1>♠ Спортен Бридж ♠</h1>
-            <p>Contract Bridge - Разиграване на карти</p>
+            <div class="header-content">
+                <h1>♠ Спортен Бридж ♠</h1>
+                <p>Contract Bridge - Разиграване на карти</p>
+            </div>
+            <div class="view-switcher">
+                <button id="player-view-btn" class="view-btn active" data-view="player">Играч</button>
+                <button id="spectator-view-btn" class="view-btn" data-view="spectator">Наблюдател</button>
+            </div>
         </header>
 
-        <main class="game-area">
+        <main class="game-area" id="player-view">
             <!-- West Player (Column 1, Rows 1-3) -->
             <div class="player-section player-west">
                 <div class="player-header">
@@ -58,6 +64,61 @@
                     <h2>SOUTH (Вие)</h2>
                 </div>
                 <div class="cards-display" id="south-cards">
+                    <!-- Cards will be rendered here -->
+                </div>
+            </div>
+        </main>
+
+        <!-- Spectator View -->
+        <main class="game-area spectator-game-area hidden" id="spectator-view">
+            <!-- West Player (Column 1, Rows 1-3) -->
+            <div class="player-section player-west">
+                <div class="player-header">
+                    <h2>WEST</h2>
+                    <div class="player-points-spectator" id="west-points-spectator">Точки: 0</div>
+                </div>
+                <div class="cards-display" id="west-cards-spectator">
+                    <!-- Cards will be rendered here -->
+                </div>
+            </div>
+
+            <!-- North Player (Columns 2-3, Row 1) -->
+            <div class="player-section player-north">
+                <div class="player-header">
+                    <h2>NORTH</h2>
+                    <div class="player-points-spectator" id="north-points-spectator">Точки: 0</div>
+                </div>
+                <div class="cards-display" id="north-cards-spectator">
+                    <!-- Cards will be rendered here -->
+                </div>
+            </div>
+
+            <!-- East Player (Column 4, Rows 1-3) -->
+            <div class="player-section player-east">
+                <div class="player-header">
+                    <h2>EAST</h2>
+                    <div class="player-points-spectator" id="east-points-spectator">Точки: 0</div>
+                </div>
+                <div class="cards-display" id="east-cards-spectator">
+                    <!-- Cards will be rendered here -->
+                </div>
+            </div>
+
+            <!-- Center Table (Columns 2-3, Row 2) -->
+            <div class="center-table">
+                <button id="deal-button-spectator" class="deal-button">
+                    Раздай карти
+                </button>
+                <p class="instructions">Натиснете бутона за разиграване на карти</p>
+            </div>
+
+            <!-- South Player (Columns 2-3, Row 3) -->
+            <div class="player-section player-south">
+                <div class="player-header">
+                    <h2>SOUTH</h2>
+                    <div class="player-points-spectator" id="south-points-spectator">Точки: 0</div>
+                </div>
+                <div class="cards-display" id="south-cards-spectator">
                     <!-- Cards will be rendered here -->
                 </div>
             </div>
