@@ -8,6 +8,7 @@ class Player {
         this.name = name;
         this.position = position; // 'SOUTH', 'WEST', 'NORTH', 'EAST'
         this.hand = [];
+        this.points = 0; // Точки за текущата игра
     }
 
     /**
@@ -32,6 +33,27 @@ class Player {
     }
 
     /**
+     * Задава точките на играча
+     */
+    setPoints(points) {
+        this.points = points;
+    }
+
+    /**
+     * Връща точките на играча
+     */
+    getPoints() {
+        return this.points;
+    }
+
+    /**
+     * Нулира точките (при нова игра)
+     */
+    resetPoints() {
+        this.points = 0;
+    }
+
+    /**
      * Сортира ръката на играча
      * Ред: ♠ (черен) → ♥ (червен) → ♣ (черен) → ♦ (червен)
      */
@@ -51,7 +73,8 @@ class Player {
         return {
             name: this.name,
             position: this.position,
-            cardCount: this.hand.length
+            cardCount: this.hand.length,
+            points: this.points
         };
     }
 }
@@ -171,5 +194,48 @@ const PlayerManager = {
     getPlayerHand(position) {
         const player = this.getPlayer(position);
         return player ? player.getHand() : [];
+    },
+
+    /**
+     * Задава точките на конкретен играч
+     */
+    setPlayerPoints(position, points) {
+        const player = this.getPlayer(position);
+        if (player) {
+            player.setPoints(points);
+        }
+    },
+
+    /**
+     * Връща точките на конкретен играч
+     */
+    getPlayerPoints(position) {
+        const player = this.getPlayer(position);
+        return player ? player.getPoints() : 0;
+    },
+
+    /**
+     * Връща точките на всички играчи
+     */
+    getAllPlayerPoints() {
+        const points = {};
+        const positions = ['SOUTH', 'WEST', 'NORTH', 'EAST'];
+        positions.forEach(position => {
+            points[position] = this.getPlayerPoints(position);
+        });
+        return points;
+    },
+
+    /**
+     * Нулира точките на всички играчи (при нова игра)
+     */
+    resetAllPoints() {
+        const positions = ['SOUTH', 'WEST', 'NORTH', 'EAST'];
+        positions.forEach(position => {
+            const player = this.getPlayer(position);
+            if (player) {
+                player.resetPoints();
+            }
+        });
     }
 };

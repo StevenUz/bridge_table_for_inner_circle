@@ -129,6 +129,17 @@ html, body {
     letter-spacing: 1px;
 }
 
+/* ===== Player Points Display ===== */
+.player-points {
+    text-align: center;
+    font-size: clamp(0.75rem, 1.4vw, 1rem);
+    color: var(--accent-color);
+    background: rgba(212, 175, 55, 0.1);
+    padding: 0.4rem;
+    border-radius: 4px;
+    margin-bottom: 0.4rem;
+}
+
 /* ===== Card Display with Overlap ===== */
 .cards-display {
     flex: 1;
@@ -156,7 +167,7 @@ html, body {
 
 /* ===== Card Styles ===== */
 .card {
-    --card-width: min(8vh, 60px);
+    --card-width: min(10.4vh, 78px);
     --card-height: calc(var(--card-width) * 1.4);
     width: var(--card-width);
     height: var(--card-height);
@@ -220,7 +231,7 @@ html, body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    font-size: clamp(0.5rem, 1.2vh, 0.8rem);
+    font-size: clamp(0.75rem, 1.8vh, 1.2rem);
     line-height: 0.9;
     font-weight: bold;
 }
@@ -231,7 +242,7 @@ html, body {
 
 .card-corner .suit {
     display: block;
-    font-size: clamp(0.6rem, 1.4vh, 0.9rem);
+    font-size: clamp(0.9rem, 2.1vh, 1.35rem);
 }
 
 /* Top Left Corner */
@@ -266,7 +277,7 @@ html, body {
 
 /* ===== Card Center ===== */
 .card-center {
-    font-size: clamp(1rem, 3vh, 1.8rem);
+    font-size: clamp(1.5rem, 4.5vh, 2.7rem);
     line-height: 1;
     display: flex;
     align-items: center;
@@ -338,7 +349,7 @@ html, body {
 /* Large screens */
 @media (min-height: 800px) {
     .card {
-        --card-width: min(10vh, 70px);
+        --card-width: min(13vh, 91px);
     }
     
     .header {
@@ -353,7 +364,7 @@ html, body {
 /* Very large screens */
 @media (min-height: 1000px) {
     .card {
-        --card-width: min(9vh, 80px);
+        --card-width: min(11.7vh, 104px);
     }
 }
 
@@ -377,7 +388,7 @@ html, body {
     }
     
     .card {
-        --card-width: min(7vh, 45px);
+        --card-width: min(9.1vh, 59px);
     }
     
     .player-header h2 {
@@ -402,7 +413,7 @@ html, body {
     }
     
     .card {
-        --card-width: min(7vh, 50px);
+        --card-width: min(9.1vh, 65px);
     }
     
     .player-north .cards-display .card,

@@ -144,5 +144,39 @@ const UIManager = {
         if (button) {
             button.disabled = !enabled;
         }
+    },
+
+    /**
+     * Показва точките на South
+     */
+    displaySouthPoints(points) {
+        // Намираме контейнера на South
+        const southSection = document.querySelector('.player-south');
+        if (!southSection) return;
+
+        // Намираме или създаваме елемент за точките
+        let pointsElement = southSection.querySelector('.player-points');
+        if (!pointsElement) {
+            pointsElement = document.createElement('div');
+            pointsElement.className = 'player-points';
+            // Поставяме го след player-header
+            const header = southSection.querySelector('.player-header');
+            if (header) {
+                header.insertAdjacentElement('afterend', pointsElement);
+            }
+        }
+
+        // Обновяваме текста
+        pointsElement.innerHTML = `<strong>Точки: ${points}</strong>`;
+    },
+
+    /**
+     * Скрива точките на South
+     */
+    hideSouthPoints() {
+        const pointsElement = document.querySelector('.player-south .player-points');
+        if (pointsElement) {
+            pointsElement.innerHTML = '';
+        }
     }
 };

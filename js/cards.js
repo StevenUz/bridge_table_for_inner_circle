@@ -145,5 +145,35 @@ const CardManager = {
      */
     sortCards(cards) {
         return Deck.sortCards(cards);
+    },
+
+    /**
+     * Изчислява точките в ръка
+     * Асо - 4 точки, Поп (K) - 3 точки, Дама (Q) - 2 точки, Вале (J) - 1 точка
+     */
+    calculatePoints(cards) {
+        if (!cards || cards.length === 0) {
+            return 0;
+        }
+
+        let points = 0;
+        cards.forEach(card => {
+            switch (card.rank) {
+                case 'A':
+                    points += 4;
+                    break;
+                case 'K':
+                    points += 3;
+                    break;
+                case 'Q':
+                    points += 2;
+                    break;
+                case 'J':
+                    points += 1;
+                    break;
+            }
+        });
+
+        return points;
     }
 };

@@ -46,16 +46,29 @@ const Game = {
                 // Задава картите на играчите
                 PlayerManager.dealHands(distribution);
 
+                // Изчислява точките за всеки играч
+                const positions = ['SOUTH', 'WEST', 'NORTH', 'EAST'];
+                positions.forEach(position => {
+                    const hand = PlayerManager.getPlayerHand(position);
+                    const points = CardManager.calculatePoints(hand);
+                    PlayerManager.setPlayerPoints(position, points);
+                });
+
                 // Показва картите
                 UIManager.displayAllPlayers();
 
-                // Показва информация
+                // Показва точките на South
+                const southPoints = PlayerManager.getPlayerPoints('SOUTH');
+                UIManager.displaySouthPoints(southPoints);
+
+                // Показва информация в конзолата
                 const cardCounts = UIManager.getCardCountByPosition();
+                const allPoints = PlayerManager.getAllPlayerPoints();
                 console.log('Карти раздадени:');
-                console.log('SOUTH:', cardCounts.SOUTH);
-                console.log('WEST:', cardCounts.WEST);
-                console.log('NORTH:', cardCounts.NORTH);
-                console.log('EAST:', cardCounts.EAST);
+                console.log('SOUTH:', cardCounts.SOUTH, 'Точки:', allPoints.SOUTH);
+                console.log('WEST:', cardCounts.WEST, 'Точки:', allPoints.WEST);
+                console.log('NORTH:', cardCounts.NORTH, 'Точки:', allPoints.NORTH);
+                console.log('EAST:', cardCounts.EAST, 'Точки:', allPoints.EAST);
 
                 UIManager.showStatus('Карти раздадени успешно');
                 UIManager.setDealButtonState(true);
