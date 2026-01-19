@@ -88,16 +88,20 @@ class Deck {
     }
 
     /**
-     * Сортира карти по костюм и номер
+     * Сортира карти по костюм, като костюмите се чередуват по цвят
+     * Ред: ♠ (черен) → ♥ (червен) → ♣ (черен) → ♦ (червен)
+     * Картите в рамките на всеки костюм са сортирани по сила
      */
     static sortCards(cards) {
-        const suitOrder = { '♠': 0, '♥': 1, '♦': 2, '♣': 3 };
+        // Разделяме по костюм и сортираме по сила (от най-малка към най-голяма)
+        const spades = cards.filter(c => c.suit === '♠').sort((a, b) => a.getValue() - b.getValue());
+        const hearts = cards.filter(c => c.suit === '♥').sort((a, b) => a.getValue() - b.getValue());
+        const clubs = cards.filter(c => c.suit === '♣').sort((a, b) => a.getValue() - b.getValue());
+        const diamonds = cards.filter(c => c.suit === '♦').sort((a, b) => a.getValue() - b.getValue());
 
-        return cards.sort((a, b) => {
-            const suitDiff = suitOrder[a.suit] - suitOrder[b.suit];
-            if (suitDiff !== 0) return suitDiff;
-            return a.getValue() - b.getValue();
-        });
+        // Подреждаме костюмите: черен-червен-черен-червен
+        // ♠ → ♥ → ♣ → ♦
+        return [...spades, ...hearts, ...clubs, ...diamonds];
     }
 }
 

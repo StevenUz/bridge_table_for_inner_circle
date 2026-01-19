@@ -29,16 +29,36 @@ const UIManager = {
         cardDiv.className = `card ${this.getSuitClass(card.suit)}`;
         cardDiv.title = `${card.rank}${card.suit}`;
 
-        const rankSpan = document.createElement('span');
-        rankSpan.className = 'card-rank';
-        rankSpan.textContent = card.rank;
+        // Горен ляв ъгъл
+        const topLeft = document.createElement('span');
+        topLeft.className = 'card-corner top-left';
+        topLeft.innerHTML = `<span class="rank">${card.rank}</span><span class="suit">${card.suit}</span>`;
 
-        const suitSpan = document.createElement('span');
-        suitSpan.className = 'card-suit';
-        suitSpan.textContent = card.suit;
+        // Горен десен ъгъл (еднаква ориентация)
+        const topRight = document.createElement('span');
+        topRight.className = 'card-corner top-right';
+        topRight.innerHTML = `<span class="rank">${card.rank}</span><span class="suit">${card.suit}</span>`;
 
-        cardDiv.appendChild(rankSpan);
-        cardDiv.appendChild(suitSpan);
+        // Средина - голям костюм
+        const center = document.createElement('span');
+        center.className = 'card-center';
+        center.textContent = card.suit;
+
+        // Долен ляв ъгъл (обърнат)
+        const bottomLeft = document.createElement('span');
+        bottomLeft.className = 'card-corner bottom-left';
+        bottomLeft.innerHTML = `<span class="rank">${card.rank}</span><span class="suit">${card.suit}</span>`;
+
+        // Долен десен ъгъл (обърнат)
+        const bottomRight = document.createElement('span');
+        bottomRight.className = 'card-corner bottom-right';
+        bottomRight.innerHTML = `<span class="rank">${card.rank}</span><span class="suit">${card.suit}</span>`;
+
+        cardDiv.appendChild(topLeft);
+        cardDiv.appendChild(topRight);
+        cardDiv.appendChild(center);
+        cardDiv.appendChild(bottomLeft);
+        cardDiv.appendChild(bottomRight);
 
         return cardDiv;
     },

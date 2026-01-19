@@ -33,9 +33,10 @@ class Player {
 
     /**
      * Сортира ръката на играча
+     * Ред: ♠ (черен) → ♥ (червен) → ♣ (черен) → ♦ (червен)
      */
     sortHand() {
-        const suitOrder = { '♠': 0, '♥': 1, '♦': 2, '♣': 3 };
+        const suitOrder = { '♠': 0, '♥': 1, '♣': 2, '♦': 3 };
         this.hand.sort((a, b) => {
             const suitDiff = suitOrder[a.suit] - suitOrder[b.suit];
             if (suitDiff !== 0) return suitDiff;
