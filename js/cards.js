@@ -89,19 +89,100 @@ class Deck {
 
     /**
      * Сортира карти по костюм, като костюмите се чередуват по цвят
-     * Ред: ♠ (черен) → ♥ (червен) → ♣ (черен) → ♦ (червен)
-     * Картите в рамките на всеки костюм са сортирани по сила
+     * Ред: черни (♠, ♣) → червени (♥, ♦), чередуващ се
+     * Целта е да не имаме два костюма от един цвят един до друг (освен ако целия цвят липсва)
      */
     static sortCards(cards) {
-        // Разделяме по костюм и сортираме по сила (от най-малка към най-голяма)
-        const spades = cards.filter(c => c.suit === '♠').sort((a, b) => a.getValue() - b.getValue());
-        const hearts = cards.filter(c => c.suit === '♥').sort((a, b) => a.getValue() - b.getValue());
-        const clubs = cards.filter(c => c.suit === '♣').sort((a, b) => a.getValue() - b.getValue());
-        const diamonds = cards.filter(c => c.suit === '♦').sort((a, b) => a.getValue() - b.getValue());
+        if (!cards || cards.length === 0) {
+            console.log('sortCards: No cards to sort');
+            return cards;
+        }
 
-        // Подреждаме костюмите: черен-червен-черен-червен
-        // ♠ → ♥ → ♣ → ♦
-        return [...spades, ...hearts, ...clubs, ...diamonds];
+        console.log(`sortCards INPUT: ${cards.length} cards:`, cards.map(c => c.rank + c.suit).join(', '));
+
+        // Стандартен редовен ред на костюмите
+        const suitOrder = ['♠', '♣', '♥', '♦'];
+        
+        // Намери какви костюми са налични (в редовия ред)
+        const presentSuits = suitOrder.filter(suit => cards.some(c => c.suit === suit));
+        console.log(`Present suits: ${presentSuits.join(', ')}`);
+
+        // Разделяй на черни и червени костюми (запазвай техния редовен ред)
+        // ♠, ♣ са черни; ♥, ♦ са червени
+        const blackSuits = [];
+        const redSuits = [];
+        
+        // Вземи костюмите в техния редовен ред
+        for (const suit of presentSuits) {
+            if (suit === '♠' || suit === '♣') {
+                blackSuits.push(suit);
+            } else {
+                redSuits.push(suit);
+            }
+        }
+        
+        console.log(`Black suits: ${blackSuits.join(', ')}, Red suits: ${redSuits.join(', ')}`);
+
+        // Чередуване за визуално разделение
+        // ПРАВИЛО: Разделяме костюми от ЕДИН цвят с костюми от ДРУГ цвят
+        let finalOrder = [];
+        
+        if (blackSuits.length > 0 && redSuits.length > 0) {
+            const maxLength = Math.max(blackSuits.length, redSuits.length);
+            
+            // Ако червените са повече, започни с червен (за да разделят черните)
+            // Ако черните са повече или равни, започни с черен (за да разделят червените)
+            const startWithRed = redSuits.length > blackSuits.length;
+            
+            for (let i = 0; i < maxLength; i++) {
+                if (startWithRed) {
+                    // Започни с червен: червен → черен → червен → черен...
+                    if (i < redSuits.length) {
+                        finalOrder.push(redSuits[i]);
+                    }
+                    if (i < blackSuits.length) {
+                        finalOrder.push(blackSuits[i]);
+                    }
+                } else {
+                    // Започни с черен: черен → червен → черен → червен...
+                    if (i < blackSuits.length) {
+                        finalOrder.push(blackSuits[i]);
+                    }
+                    if (i < redSuits.length) {
+                        finalOrder.push(redSuits[i]);
+                    }
+                }
+            }
+        } else {
+            // Ако всички от един цвят, просто ги подреди
+            finalOrder = presentSuits;
+        }
+
+        console.log(`Final suit order after interleaving: ${finalOrder.join(', ')}`);
+
+        // Подреди картите по костюм и сила
+        const result = [];
+        for (const suit of finalOrder) {
+            const cardsOfSuit = cards.filter(c => c.suit === suit)
+                .sort((a, b) => a.getValue() - b.getValue());
+            console.log(`  Adding ${cardsOfSuit.length} cards of ${suit}`);
+            result.push(...cardsOfSuit);
+        }
+
+        console.log(`sortCards OUTPUT: ${result.length} cards:`, result.map(c => c.rank + c.suit).join(', '));
+        
+        // Проверка за дублирани
+        const cardKeys = result.map(c => c.rank + c.suit);
+        const duplicates = cardKeys.filter((card, index) => cardKeys.indexOf(card) !== index);
+        if (duplicates.length > 0) {
+            console.error('⚠️ ДУБЛИРАНИ КАРТИ В sortCards:', duplicates);
+        }
+        
+        if (result.length !== cards.length) {
+            console.warn('⚠️ WARNING: Card count mismatch! Input:', cards.length, 'Output:', result.length);
+        }
+
+        return result;
     }
 }
 

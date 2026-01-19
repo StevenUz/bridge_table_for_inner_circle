@@ -98,7 +98,8 @@ class Players {
     dealHands(distribution) {
         for (const [position, cards] of Object.entries(distribution)) {
             this.players[position].setHand(cards);
-            this.players[position].sortHand();
+            // НЕ сортираме отново - вече е сортирано от sortCards()
+            // this.players[position].sortHand();
         }
     }
 

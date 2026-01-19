@@ -41,6 +41,10 @@ const Game = {
      * Раздава нова игра
      */
     dealNewGame() {
+        console.log('\n\n╔════════════════════════════════════════╗');
+        console.log('║      DEAL NEW GAME - START');
+        console.log('╚════════════════════════════════════════╝');
+        
         UIManager.clearAllCards();
         UIManager.setDealButtonState(false);
         UIManager.showStatus('Раздавам карти...');
@@ -48,6 +52,8 @@ const Game = {
         // Симулира малка забавка за по-добър UX
         setTimeout(() => {
             try {
+                console.log('► setTimeout callback - начало на раздаването');
+                
                 // Прочита последния използан цвят и алтернира за текущото раздаване
                 const lastDeckColor = localStorage.getItem('lastDeckColor');
                 if (lastDeckColor) {
@@ -72,6 +78,22 @@ const Game = {
 
                 // Показва картите с текущия цвят на тестето
                 const deckColor = CardManager.getDeckColor();
+                
+                // DEBUG: Показва картите преди визуализиране
+                console.log('=== DEBUG: Преди displayAllPlayers ===');
+                const debugCounts = UIManager.getCardCountByPosition();
+                console.log('Брой карти:', debugCounts);
+                const allDebugHands = {};
+                ['SOUTH', 'WEST', 'NORTH', 'EAST'].forEach(pos => {
+                    const hand = PlayerManager.getPlayerHand(pos);
+                    allDebugHands[pos] = hand.length;
+                });
+                console.log('Размер на ръката:', allDebugHands);
+                
+                // Гарантираме че контейнерите са чисти преди показване
+                console.log('Повторно очищаване преди показване на картите...');
+                UIManager.clearAllCards();
+                
                 UIManager.displayAllPlayers(deckColor);
 
                 // Показва картите и в Spectator режим
@@ -87,7 +109,7 @@ const Game = {
                 // Показва информация в конзолата
                 const cardCounts = UIManager.getCardCountByPosition();
                 const allPoints = PlayerManager.getAllPlayerPoints();
-                console.log('Карти раздадени:');
+                console.log('=== Карти раздадени ===');
                 console.log('SOUTH:', cardCounts.SOUTH, 'Точки:', allPoints.SOUTH);
                 console.log('WEST:', cardCounts.WEST, 'Точки:', allPoints.WEST);
                 console.log('NORTH:', cardCounts.NORTH, 'Точки:', allPoints.NORTH);
@@ -98,6 +120,17 @@ const Game = {
                 localStorage.setItem('lastDeckColor', deckColor);
 
                 UIManager.showStatus('Карти раздадени успешно');
+                
+                console.log('\n✓ DEAL COMPLETE - Всички карти разиграни успешно');
+                console.log('╔════════════════════════════════════════╗');
+                console.log('║      DEAL NEW GAME - END');
+                console.log('╚════════════════════════════════════════╝\n');
+                
+                // DEBUG: Проверяет за дублирани карти
+                setTimeout(() => {
+                    UIManager.checkForDuplicatesSpectator();
+                }, 100);
+                
                 UIManager.setDealButtonState(true);
             } catch (error) {
                 console.error('Грешка при раздаване:', error);
