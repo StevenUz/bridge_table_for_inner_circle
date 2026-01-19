@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Спортен Бридж - Contract Bridge</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>♠ Спортен Бридж ♠</h1>
+            <p>Contract Bridge - Разиграване на карти</p>
+        </header>
+
+        <main class="game-area">
+            <!-- North Player -->
+            <div class="player-section player-north">
+                <div class="player-header">
+                    <h2>NORTH</h2>
+                </div>
+                <div class="cards-display" id="north-cards">
+                    <!-- Cards will be rendered here -->
+                </div>
+            </div>
+
+            <!-- West and East Players -->
+            <div class="side-players">
+                <!-- West Player -->
+                <div class="player-section player-west">
+                    <div class="player-header">
+                        <h2>WEST</h2>
+                    </div>
+                    <div class="cards-display vertical" id="west-cards">
+                        <!-- Cards will be rendered here -->
+                    </div>
+                </div>
+
+                <!-- Center Table -->
+                <div class="center-table">
+                    <button id="deal-button" class="deal-button">
+                        Раздай карти
+                    </button>
+                    <p class="instructions">Натиснете бутона за разиграване на карти</p>
+                </div>
+
+                <!-- East Player -->
+                <div class="player-section player-east">
+                    <div class="player-header">
+                        <h2>EAST</h2>
+                    </div>
+                    <div class="cards-display vertical" id="east-cards">
+                        <!-- Cards will be rendered here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- South Player -->
+            <div class="player-section player-south">
+                <div class="player-header">
+                    <h2>SOUTH (Вие)</h2>
+                </div>
+                <div class="cards-display" id="south-cards">
+                    <!-- Cards will be rendered here -->
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2026 Contract Bridge Application</p>
+        </footer>
+    </div>
+
+    <script src="js/cards.js"></script>
+    <script src="js/players.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
