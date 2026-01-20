@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bridge Lobby - Избор на маса</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="lobby.css">
+</head>
+<body>
+    <div class="lobby-container">
+        <header class="lobby-header">
+            <h1 data-i18n="lobby.title">♠ Bridge Lobby ♠</h1>
+            <div class="user-info">
+                <div id="language-selector-container"></div>
+                <span id="username-display"><span data-i18n="lobby.user">Потребител:</span> <strong id="current-username">Гост</strong></span>
+                <button id="logout-btn" class="btn-secondary" data-i18n="lobby.logout">Изход</button>
+            </div>
+        </header>
+
+        <main class="lobby-main">
+            <!-- Login Section (показва се ако не си логнат) -->
+            <section id="login-section" class="login-section">
+                <div class="login-card">
+                    <h2 data-i18n="login.title">Вход в системата</h2>
+                    <form id="login-form">
+                        <div class="form-group">
+                            <label for="username" data-i18n="login.username">Потребителско име:</label>
+                            <input type="text" id="username" required autocomplete="username">
+                        </div>
+                        <div class="form-group">
+                            <label for="password" data-i18n="login.password">Парола:</label>
+                            <input type="password" id="password" required autocomplete="current-password">
+                        </div>
+                        <div class="form-group">
+                            <label for="login-language" data-i18n="login.language">Език:</label>
+                            <select id="login-language" class="language-selector-large">
+                                <option value="bg">🇧🇬 Български</option>
+                                <option value="en">🇬🇧 English</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn-primary" data-i18n="login.button">Вход</button>
+                        <p class="hint" data-i18n="login.hint">MockLogin: използвайте произволно име/парола за тест</p>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Tables Section (показва се след login) -->
+            <section id="tables-section" class="tables-section hidden">
+                <h2 data-i18n="lobby.availableTables">Налични маси</h2>
+                
+                <div class="tables-controls">
+                    <button id="create-table-btn" class="btn-primary" data-i18n="lobby.createTable">
+                        ➕ Създай нова маса
+                    </button>
+                    <button id="refresh-tables-btn" class="btn-secondary" data-i18n="lobby.refresh">
+                        🔄 Обнови
+                    </button>
+                </div>
+
+                <div id="tables-list" class="tables-list">
+                    <!-- Tables will be rendered here -->
+                </div>
+            </section>
+        </main>
+
+        <footer class="lobby-footer">
+            <p data-i18n="footer.copyright">&copy; 2026 Bridge Application - Inner Circle</p>
+        </footer>
+    </div>
+
+    <!-- Modal за избор на позиция -->
+    <div id="position-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><span data-i18n="modal.selectPosition">Избери позиция на</span> <span id="modal-table-name"></span></h3>
+                <button class="modal-close" id="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="role-selector">
+                    <button class="role-btn active" data-role="player">
+                        <span class="role-icon">🎴</span>
+                        <span class="role-label" data-i18n="game.player">Играч</span>
+                    </button>
+                    <button class="role-btn" data-role="spectator">
+                        <span class="role-icon">👁️</span>
+                        <span class="role-label" data-i18n="game.spectator">Наблюдател</span>
+                    </button>
+                </div>
+                <div id="player-positions" class="position-grid">
+                    <button class="position-btn" data-position="NORTH">
+                        <span class="position-name" data-i18n="modal.position.north">СЕВЕР (North)</span>
+                        <span class="player-name" id="north-player" data-i18n="modal.empty">Празно</span>
+                    </button>
+                    <button class="position-btn" data-position="WEST">
+                        <span class="position-name" data-i18n="modal.position.west">ЗАПАД (West)</span>
+                        <span class="player-name" id="west-player" data-i18n="modal.empty">Празно</span>
+                    </button>
+                    <button class="position-btn" data-position="EAST">
+                        <span class="position-name" data-i18n="modal.position.east">ИЗТОК (East)</span>
+                        <span class="player-name" id="east-player" data-i18n="modal.empty">Празно</span>
+                    </button>
+                    <button class="position-btn" data-position="SOUTH">
+                        <span class="position-name" data-i18n="modal.position.south">ЮГ (South)</span>
+                        <span class="player-name" id="south-player" data-i18n="modal.empty">Празно</span>
+                    </button>
+                </div>
+                <div id="spectator-mode" class="spectator-info hidden">
+                    <div class="spectator-icon">👁️</div>
+                    <h4 data-i18n="modal.spectatorMode">Режим Наблюдател</h4>
+                    <p data-i18n="modal.spectatorHint">Ще гледате играта без да участвате</p>
+                    <button class="btn-primary" id="confirm-spectator" data-i18n="modal.confirmSpectator">Присъедини се като Наблюдател</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/i18n.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/table.js"></script>
+    <script src="js/lobby.js"></script>
+</body>
+</html>

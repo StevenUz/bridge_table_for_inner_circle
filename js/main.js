@@ -5,12 +5,21 @@
  */
 const Game = {
     initialized: false,
+    currentTable: null,
+    currentPosition: null,
+    currentUser: null,
 
     /**
      * Инициализира играта
      */
     init() {
         if (this.initialized) return;
+
+        // Инициализира език
+        this.initializeLanguage();
+
+        // Проверка дали има потребител и маса/позиция
+        this.checkAuthAndTable();
 
         CardManager.init();
         UIManager.init();
@@ -22,6 +31,96 @@ const Game = {
     },
 
     /**
+     * Инициализира езиковата система
+     */
+    initializeLanguage() {
+        // Добавя селектор за език в game header
+        const langSelectorContainer = document.getElementById('game-language-selector-container');
+        if (langSelectorContainer) {
+            const langSelector = window.i18n.createLanguageSelector();
+            langSelectorContainer.appendChild(langSelector);
+        }
+        
+        // Subscribe за промени в езика
+        window.i18n.subscribe((lang) => {
+            console.log('Language changed in game, updating translations...');
+            window.i18n.updatePageTranslations();
+            this.updateGameInfo(); // Обновява информацията
+        });
+        
+        // Първоначална актуализация на преводите
+        window.i18n.updatePageTranslations();
+    },
+
+    /**
+     * Проверява дали има валидна сесия
+     */
+    checkAuthAndTable() {
+        // Проверка за автентикация
+        if (!window.authManager.isLoggedIn()) {
+            console.warn('Няма влязъл потребител - пренасочване към lobby');
+            window.location.href = 'lobby.html';
+            return;
+        }
+
+        this.currentUser = window.authManager.getCurrentUser();
+
+        // Проверка за маса и позиция
+        const selection = window.tableManager.getCurrentSelection();
+        if (!selection.tableId) {
+            console.warn('Няма избрана маса - пренасочване към lobby');
+            window.location.href = 'lobby.html';
+            return;
+        }
+
+        this.currentTable = window.tableManager.getTable(selection.tableId);
+        this.currentPosition = selection.position;
+        this.currentRole = selection.role || 'player';
+
+        // Актуализира UI с информация
+        this.updateGameInfo();
+    },
+
+    /**
+     * Актуализира информацията за масата и играча
+     */
+    updateGameInfo() {
+        const tableInfoEl = document.getElementById('current-table');
+        const positionInfoEl = document.getElementById('current-position');
+        const roleInfoEl = document.getElementById('current-role');
+        const southLabelEl = document.getElementById('south-label');
+
+        if (tableInfoEl && this.currentTable) {
+            tableInfoEl.textContent = this.currentTable.name;
+        }
+
+        if (positionInfoEl) {
+            if (this.currentRole === 'spectator') {
+                positionInfoEl.textContent = '-';
+            } else if (this.currentPosition) {
+                positionInfoEl.textContent = this.currentPosition;
+            }
+        }
+
+        if (roleInfoEl) {
+            const roleText = this.currentRole === 'spectator' 
+                ? window.i18n.t('game.spectator') 
+                : window.i18n.t('game.player');
+            roleInfoEl.textContent = roleText;
+        }
+
+        if (southLabelEl && this.currentUser) {
+            if (this.currentRole === 'spectator') {
+                // За наблюдател показваме просто името
+                southLabelEl.textContent = `${window.i18n.t('game.spectator')} (${this.currentUser.username})`;
+            } else if (this.currentPosition) {
+                // Показваме реалната позиция на играча
+                southLabelEl.textContent = `${this.currentPosition} (${this.currentUser.username})`;
+            }
+        }
+    },
+
+    /**
      * Прикачва event listeners
      */
     attachEventListeners() {
@@ -30,10 +129,19 @@ const Game = {
             dealButton.addEventListener('click', () => this.dealNewGame());
         }
 
-        // Също и бутона в spectator режим
-        const spectatorDealButton = document.getElementById('deal-button-spectator');
-        if (spectatorDealButton) {
-            spectatorDealButton.addEventListener('click', () => this.dealNewGame());
+        // Бутон за връщане към lobby
+        const backToLobbyBtn = document.getElementById('back-to-lobby-btn');
+        if (backToLobbyBtn) {
+            backToLobbyBtn.addEventListener('click', () => this.returnToLobby());
+        }
+    },
+
+    /**
+     * Връща към lobby
+     */
+    returnToLobby() {
+        if (confirm(window.i18n.t('msg.backToLobbyConfirm'))) {
+            window.location.href = 'lobby.html';
         }
     },
 

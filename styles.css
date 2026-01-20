@@ -51,6 +51,44 @@ html, body {
 
 .header-content {
     flex: 1;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.table-info {
+    font-size: 0.9rem;
+    margin-top: 0.3rem;
+    color: var(--accent-color);
+    font-weight: 600;
+}
+
+.table-info span {
+    color: white;
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+.header-content {
+    flex: 1;
     text-align: center;
 }
 
