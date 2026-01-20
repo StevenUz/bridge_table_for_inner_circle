@@ -310,17 +310,50 @@ const UIManager = {
 
     /**
      * Визуализира всички играчи и техните карти
+     * Параметър isSpectatorMode определя дали да показва всички карти
+     * Параметър currentPlayerPosition определя коя позиция е текущият играч
      */
-    displayAllPlayers(deckColor = 'blue') {
-        console.log(`displayAllPlayers called with deckColor=${deckColor}`);
-        const positions = ['SOUTH', 'WEST', 'NORTH', 'EAST'];
-
-        positions.forEach(position => {
-            console.log(`Processing position: ${position}`);
-            const hand = PlayerManager.getPlayerHand(position);
-            console.log(`Hand for ${position}:`, hand ? hand.length : 0, 'cards');
-            this.displayPlayerCardsPlayerView(position, hand, deckColor);
+    displayAllPlayers(deckColor = 'blue', isSpectatorMode = false, currentPlayerPosition = 'SOUTH') {
+        console.log(`displayAllPlayers called with deckColor=${deckColor}, isSpectatorMode=${isSpectatorMode}, currentPlayerPosition=${currentPlayerPosition}`);
+        
+        // Ротация на позициите според текущата позиция на играча
+        const positionMap = this.getRotatedPositions(currentPlayerPosition);
+        
+        // Визуализираме според ротираните позиции
+        ['SOUTH', 'WEST', 'NORTH', 'EAST'].forEach(screenPosition => {
+            const actualPosition = positionMap[screenPosition];
+            console.log(`Screen ${screenPosition} shows actual ${actualPosition}`);
+            const hand = PlayerManager.getPlayerHand(actualPosition);
+            console.log(`Hand for ${actualPosition}:`, hand ? hand.length : 0, 'cards');
+            
+            if (isSpectatorMode) {
+                // В spectator режим показваме всички карти
+                this.displayPlayerCards(screenPosition, hand);
+            } else {
+                // В player режим показваме само картите на текущата позиция (долу = SOUTH на екрана)
+                if (screenPosition === 'SOUTH') {
+                    this.displayPlayerCards(screenPosition, hand);
+                } else {
+                    const numberOfCards = hand ? hand.length : 0;
+                    this.displayPlayerCardsAsBack(screenPosition, numberOfCards, deckColor);
+                }
+            }
         });
+    },
+
+    /**
+     * Връща mapping на позиции според това къде е текущият играч
+     * Текущият играч винаги вижда себе си отдолу (SOUTH на екрана)
+     */
+    getRotatedPositions(currentPlayerPosition) {
+        const rotationMap = {
+            'SOUTH': { SOUTH: 'SOUTH', WEST: 'WEST', NORTH: 'NORTH', EAST: 'EAST' },
+            'WEST': { SOUTH: 'WEST', WEST: 'NORTH', NORTH: 'EAST', EAST: 'SOUTH' },
+            'NORTH': { SOUTH: 'NORTH', WEST: 'EAST', NORTH: 'SOUTH', EAST: 'WEST' },
+            'EAST': { SOUTH: 'EAST', WEST: 'SOUTH', NORTH: 'WEST', EAST: 'NORTH' }
+        };
+        
+        return rotationMap[currentPlayerPosition] || rotationMap['SOUTH'];
     },
 
     /**

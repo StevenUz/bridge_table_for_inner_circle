@@ -11,7 +11,7 @@
         <header class="header">
             <div class="header-content">
                 <h1 data-i18n="game.title">♠ Спортен Бридж ♠</h1>
-                <p data-i18n="game.subtitle">Contract Bridge - Разиграване на карти</p>
+                <p data-i18n="game.subtitle">Contract Bridge</p>
                 <p class="table-info" id="table-info">
                     <span data-i18n="game.table">Маса:</span> <span id="current-table">-</span> | 
                     <span data-i18n="game.position">Позиция:</span> <span id="current-position">-</span> |
@@ -19,6 +19,10 @@
                 </p>
             </div>
             <div class="header-actions">
+                <div class="spectator-indicator" id="table-spectator-indicator">
+                    <span class="indicator-icon">👁️</span>
+                    <span class="indicator-count" id="spectator-count">0</span>
+                </div>
                 <div id="game-language-selector-container"></div>
                 <button id="back-to-lobby-btn" class="btn-secondary" data-i18n="game.backToLobby">← Към Lobby</button>
             </div>
@@ -28,7 +32,7 @@
             <!-- West Player (Column 1, Rows 1-3) -->
             <div class="player-section player-west">
                 <div class="player-header">
-                    <h2>WEST</h2>
+                    <h2 id="west-label">WEST</h2>
                 </div>
                 <div class="cards-display" id="west-cards">
                     <!-- Cards will be rendered here -->
@@ -38,7 +42,7 @@
             <!-- North Player (Columns 2-3, Row 1) -->
             <div class="player-section player-north">
                 <div class="player-header">
-                    <h2>NORTH</h2>
+                    <h2 id="north-label">NORTH</h2>
                 </div>
                 <div class="cards-display" id="north-cards">
                     <!-- Cards will be rendered here -->
@@ -48,7 +52,7 @@
             <!-- East Player (Column 4, Rows 1-3) -->
             <div class="player-section player-east">
                 <div class="player-header">
-                    <h2>EAST</h2>
+                    <h2 id="east-label">EAST</h2>
                 </div>
                 <div class="cards-display" id="east-cards">
                     <!-- Cards will be rendered here -->

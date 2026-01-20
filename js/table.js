@@ -128,11 +128,35 @@ class TableManager {
         if (this.currentTableId === tableId && this.currentPosition === position) {
             this.currentTableId = null;
             this.currentPosition = null;
+            this.currentRole = null;
             this.saveCurrentSelection();
         }
 
         this.saveToStorage();
         console.log(`Position ${position} at ${tableId} is now empty`);
+    }
+
+    // Напускане като наблюдател
+    leaveAsSpectator(tableId, username) {
+        const table = this.getTable(tableId);
+        if (!table) {
+            throw new Error('Масата не съществува');
+        }
+
+        if (table.spectators) {
+            table.spectators = table.spectators.filter(s => s !== username);
+        }
+        
+        // Ако това е текущата маса, изчистваме я
+        if (this.currentTableId === tableId && this.currentRole === 'spectator') {
+            this.currentTableId = null;
+            this.currentPosition = null;
+            this.currentRole = null;
+            this.saveCurrentSelection();
+        }
+
+        this.saveToStorage();
+        console.log(`${username} left ${tableId} as spectator`);
     }
 
     // Проверка дали масата е пълна

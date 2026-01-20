@@ -27,6 +27,8 @@ const translations = {
         'table.joinAsPlayer': 'Присъедини се като Играч',
         'table.joinAsSpectator': 'Гледай като Наблюдател',
         'table.tableFull': 'Масата е пълна',
+        'table.spectators': 'Наблюдатели',
+        'table.noSpectators': 'Няма наблюдатели',
         
         // Position modal
         'modal.selectPosition': 'Избери позиция на',
@@ -55,10 +57,12 @@ const translations = {
         'game.player': 'Играч',
         'game.spectator': 'Наблюдател',
         'game.backToLobby': '← Към Lobby',
+        'game.leaveTable': '← Напусни масата',
         'game.dealCards': 'Раздай карти',
         'game.instructions': 'Натиснете бутона за разиграване на карти',
         'game.points': 'Точки:',
         'game.you': 'Вие',
+        'game.spectatorCannotDeal': 'Наблюдателят не може да раздава карти!',
         
         // Messages
         'msg.loginError': 'Грешка при вход:',
@@ -98,6 +102,8 @@ const translations = {
         'table.joinAsPlayer': 'Join as Player',
         'table.joinAsSpectator': 'Watch as Spectator',
         'table.tableFull': 'Table is Full',
+        'table.spectators': 'Spectators',
+        'table.noSpectators': 'No spectators',
         
         // Position modal
         'modal.selectPosition': 'Select Position at',
@@ -126,10 +132,12 @@ const translations = {
         'game.player': 'Player',
         'game.spectator': 'Spectator',
         'game.backToLobby': '← Back to Lobby',
+        'game.leaveTable': '← Leave Table',
         'game.dealCards': 'Deal Cards',
         'game.instructions': 'Press button to deal cards',
         'game.points': 'Points:',
         'game.you': 'You',
+        'game.spectatorCannotDeal': 'Spectators cannot deal cards!',
         
         // Messages
         'msg.loginError': 'Login error:',

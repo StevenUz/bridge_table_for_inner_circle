@@ -109,13 +109,133 @@ const Game = {
             roleInfoEl.textContent = roleText;
         }
 
-        if (southLabelEl && this.currentUser) {
-            if (this.currentRole === 'spectator') {
-                // За наблюдател показваме просто името
-                southLabelEl.textContent = `${window.i18n.t('game.spectator')} (${this.currentUser.username})`;
-            } else if (this.currentPosition) {
-                // Показваме реалната позиция на играча
-                southLabelEl.textContent = `${this.currentPosition} (${this.currentUser.username})`;
+        // Актуализира всички позиции според ролята
+        this.updatePositionLabels();
+
+        // Конфигурира UI според ролята
+        this.configureUIForRole();
+    },
+
+    /**
+     * Актуализира имената на позициите
+     */
+    updatePositionLabels() {
+        if (this.currentRole === 'spectator') {
+            // За наблюдател показваме имената на играчите на всички позиции
+            const positions = ['NORTH', 'SOUTH', 'EAST', 'WEST'];
+            positions.forEach(pos => {
+                const labelEl = document.getElementById(`${pos.toLowerCase()}-label`);
+                if (labelEl && this.currentTable) {
+                    const playerName = this.currentTable.positions[pos];
+                    if (playerName) {
+                        labelEl.textContent = `${pos} (${playerName})`;
+                    } else {
+                        labelEl.textContent = `${pos} (${window.i18n.t('modal.empty')})`;
+                    }
+                }
+            });
+        } else {
+            // За играч ротираме позициите според неговата позиция
+            const rotationMap = this.getRotatedPositions(this.currentPosition || 'SOUTH');
+            
+            ['NORTH', 'SOUTH', 'EAST', 'WEST'].forEach(screenPos => {
+                const actualPos = rotationMap[screenPos];
+                const labelEl = document.getElementById(`${screenPos.toLowerCase()}-label`);
+                
+                if (labelEl && this.currentTable) {
+                    const playerName = this.currentTable.positions[actualPos];
+                    
+                    if (actualPos === this.currentPosition && this.currentUser) {
+                        // Текущата позиция на играча (винаги се показва долу)
+                        labelEl.textContent = `${actualPos} (${this.currentUser.username})`;
+                    } else if (playerName) {
+                        // Други позиции с играчи
+                        labelEl.textContent = `${actualPos} (${playerName})`;
+                    } else {
+                        // Празни позиции
+                        labelEl.textContent = `${actualPos} (${window.i18n.t('modal.empty')})`;
+                    }
+                }
+            });
+        }
+
+        // Обновяваме индикатора за наблюдатели
+        this.updateSpectatorIndicator();
+    },
+
+    updateSpectatorIndicator() {
+        const indicator = document.getElementById('table-spectator-indicator');
+        const countElement = document.getElementById('spectator-count');
+        
+        if (!indicator || !countElement || !this.currentTable) return;
+
+        const spectators = this.currentTable.spectators || [];
+        const spectatorCount = spectators.length;
+        const hasSpectators = spectatorCount > 0;
+
+        // Обновяваме състоянието
+        if (hasSpectators) {
+            indicator.classList.add('active');
+        } else {
+            indicator.classList.remove('active');
+        }
+
+        // Обновяваме броя
+        countElement.textContent = spectatorCount;
+
+        // Обновяваме tooltip
+        const tooltipText = hasSpectators 
+            ? `${window.i18n.t('table.spectators')}: ${spectators.join(', ')}`
+            : window.i18n.t('table.noSpectators');
+        indicator.setAttribute('title', tooltipText);
+    },
+
+    /**
+     * Връща mapping на позиции според това къде е текущият играч
+     */
+    getRotatedPositions(currentPlayerPosition) {
+        const rotationMap = {
+            'SOUTH': { SOUTH: 'SOUTH', WEST: 'WEST', NORTH: 'NORTH', EAST: 'EAST' },
+            'WEST': { SOUTH: 'WEST', WEST: 'NORTH', NORTH: 'EAST', EAST: 'SOUTH' },
+            'NORTH': { SOUTH: 'NORTH', WEST: 'EAST', NORTH: 'SOUTH', EAST: 'WEST' },
+            'EAST': { SOUTH: 'EAST', WEST: 'SOUTH', NORTH: 'WEST', EAST: 'NORTH' }
+        };
+        
+        return rotationMap[currentPlayerPosition] || rotationMap['SOUTH'];
+    },
+
+    /**
+     * Конфигурира UI според ролята (Player vs Spectator)
+     */
+    configureUIForRole() {
+        const dealButton = document.getElementById('deal-button');
+        const backToLobbyBtn = document.getElementById('back-to-lobby-btn');
+
+        if (this.currentRole === 'spectator') {
+            // Spectator режим: не може да раздава, само да гледа
+            if (dealButton) {
+                dealButton.disabled = true;
+                dealButton.style.opacity = '0.5';
+                dealButton.style.cursor = 'not-allowed';
+                dealButton.title = window.i18n.t('game.spectatorCannotDeal') || 'Наблюдателят не може да раздава карти';
+            }
+
+            // Променяме текста на бутона за връщане
+            if (backToLobbyBtn) {
+                backToLobbyBtn.innerHTML = window.i18n.t('game.leaveTable') || '← Напусни масата';
+            }
+        } else {
+            // Player режим: може да раздава
+            if (dealButton) {
+                dealButton.disabled = false;
+                dealButton.style.opacity = '1';
+                dealButton.style.cursor = 'pointer';
+                dealButton.title = '';
+            }
+
+            // Бутонът за player също се казва "Напусни масата"
+            if (backToLobbyBtn) {
+                backToLobbyBtn.innerHTML = window.i18n.t('game.leaveTable') || '← Напусни масата';
             }
         }
     },
@@ -141,6 +261,19 @@ const Game = {
      */
     returnToLobby() {
         if (confirm(window.i18n.t('msg.backToLobbyConfirm'))) {
+            // Освобождаваме позицията/spectator мястото преди да напуснем
+            const selection = window.tableManager.getCurrentSelection();
+            
+            if (selection.tableId) {
+                if (selection.role === 'spectator') {
+                    // Премахваме от списъка с наблюдатели
+                    window.tableManager.leaveAsSpectator(selection.tableId, this.currentUser.username);
+                } else if (selection.position) {
+                    // Освобождаваме позицията
+                    window.tableManager.leavePosition(selection.tableId, selection.position);
+                }
+            }
+            
             window.location.href = 'lobby.html';
         }
     },
@@ -149,6 +282,12 @@ const Game = {
      * Раздава нова игра
      */
     dealNewGame() {
+        // Проверка дали потребителят е наблюдател
+        if (this.currentRole === 'spectator') {
+            alert(window.i18n.t('game.spectatorCannotDeal') || 'Наблюдателят не може да раздава карти!');
+            return;
+        }
+
         console.log('\n\n╔════════════════════════════════════════╗');
         console.log('║      DEAL NEW GAME - START');
         console.log('╚════════════════════════════════════════╝');
@@ -202,14 +341,17 @@ const Game = {
                 console.log('Повторно очищаване преди показване на картите...');
                 UIManager.clearAllCards();
                 
-                UIManager.displayAllPlayers(deckColor);
+                // Показваме картите според ролята и позицията
+                const isSpectator = this.currentRole === 'spectator';
+                const playerPosition = isSpectator ? 'SOUTH' : (this.currentPosition || 'SOUTH');
+                UIManager.displayAllPlayers(deckColor, isSpectator, playerPosition);
 
                 // Показва картите и в Spectator режим
                 UIManager.displayAllPlayersSpectator();
 
-                // Показва точките на South в Player режим
-                const southPoints = PlayerManager.getPlayerPoints('SOUTH');
-                UIManager.displaySouthPoints(southPoints);
+                // Показва точките на текущия играч в Player режим
+                const currentPlayerPoints = PlayerManager.getPlayerPoints(playerPosition);
+                UIManager.displaySouthPoints(currentPlayerPoints);
 
                 // Показва точките на всички в Spectator режим
                 UIManager.displayAllPointsSpectator();

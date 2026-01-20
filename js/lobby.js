@@ -118,14 +118,21 @@ async function handleLogin(e) {
 
 function handleLogout() {
     if (confirm(window.i18n.t('msg.logoutConfirm'))) {
-        window.authManager.logout();
+        const user = window.authManager.getCurrentUser();
         
         // Изчистваме текущата селекция
         const selection = window.tableManager.getCurrentSelection();
-        if (selection.tableId && selection.position) {
-            window.tableManager.leavePosition(selection.tableId, selection.position);
+        if (selection.tableId) {
+            if (selection.role === 'spectator') {
+                // Премахваме от списъка с наблюдатели
+                window.tableManager.leaveAsSpectator(selection.tableId, user.username);
+            } else if (selection.position) {
+                // Освобождаваме позицията
+                window.tableManager.leavePosition(selection.tableId, selection.position);
+            }
         }
         
+        window.authManager.logout();
         showLoginSection();
     }
 }
@@ -170,14 +177,23 @@ function createTableCard(table) {
     const card = document.createElement('div');
     const isFull = window.tableManager.isTableFull(table.id);
     const availableSeats = window.tableManager.getAvailableSeats(table.id);
+    const spectatorCount = table.spectators ? table.spectators.length : 0;
+    const hasSpectators = spectatorCount > 0;
     
     card.className = 'table-card' + (isFull ? ' full' : '');
     
     card.innerHTML = `
         <div class="table-header">
             <div class="table-name">${escapeHtml(table.name)}</div>
-            <div class="table-status ${isFull ? 'full' : 'waiting'}">
-                ${isFull ? window.i18n.t('table.full') : `${availableSeats} ${window.i18n.t('table.seats')}`}
+            <div class="table-indicators">
+                <div class="spectator-indicator ${hasSpectators ? 'active' : ''}" 
+                     title="${hasSpectators ? window.i18n.t('table.spectators') + ': ' + table.spectators.join(', ') : window.i18n.t('table.noSpectators')}">
+                    <span class="indicator-icon">👁️</span>
+                    ${spectatorCount > 0 ? `<span class="indicator-count">${spectatorCount}</span>` : ''}
+                </div>
+                <div class="table-status ${isFull ? 'full' : 'waiting'}">
+                    ${isFull ? window.i18n.t('table.full') : `${availableSeats} ${window.i18n.t('table.seats')}`}
+                </div>
             </div>
         </div>
         <div class="table-players">
